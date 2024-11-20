@@ -9,11 +9,19 @@
 }
 
 .nav-logo {
-    width: 200px;
+    width: 100px;
+    transition: 0.2s ease-in-out;
+}
+
+.nav-logo:hover {
+    rotate: 360deg;
+    transform: scale(1.1);
 }
 
 .nav-profile {
     width: 75px;
+    height: 75px;
+    border-radius: 50%;
 }
 
 @media(max-width:800px) {

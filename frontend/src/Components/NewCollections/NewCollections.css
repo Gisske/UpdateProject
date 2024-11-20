@@ -7,9 +7,27 @@
 }
 
 .new-collections h1 {
+    position: relative;
+    display: inline-block;
+    padding-bottom: 5px;
     color: #171717;
     font-size: 50px;
     font-weight: 400;
+}
+
+.new-collections h1::after {
+    content: "";
+    left: 0;
+    bottom: 0;
+    width: 0;
+    position: absolute;
+    background-color: #61a6ff;
+    height: 4px;
+    transition: 0.3s ease;
+}
+
+.new-collections h1:hover::after {
+    width: 100%;
 }
 
 .new-collections hr {

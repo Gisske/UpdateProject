@@ -1,17 +1,14 @@
 import React from 'react'
 import './Footer.css'
 import footer_logo from '../Assets/logo.png'
-import instagram_icon from '../Assets/instagram_icon.png'
-import pintester_icon from '../Assets/pintester_icon.png'
-import whatsapp_icon from '../Assets/whatsapp_icon.png'
-import { FaInstagram, FaFacebook, FaGithub } from 'react-icons/fa';
+import { FaInstagram, FaFacebook, FaLine } from 'react-icons/fa';
 
 export const Footer = () => {
     return (
         <div className='footer'>
             <div className="footer-logo">
                 <img src={footer_logo} alt="" />
-                <p>STYLE SHOPHUB</p>
+                <p>เครื่องแบบนักศึกษา</p>
             </div>
             <ul className="footer-links">
                 <li>สินค้า</li>
@@ -26,7 +23,7 @@ export const Footer = () => {
                     <span><FaFacebook size={24} /></span>
                 </div>
                 <div className="footer-icons-container">
-                    <span><FaGithub size={24} /></span>
+                    <span><FaLine size={24} /></span>
                 </div>
             </div>
             <div className="footer-copyright">

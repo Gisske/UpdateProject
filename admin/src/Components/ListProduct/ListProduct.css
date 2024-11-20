@@ -1,0 +1,115 @@
+.list-product {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 740px;
+    padding: 10px 50px;
+    margin: 30px;
+    border-radius: 6px;
+    background: white;
+}
+
+.list-product h1 {
+    position: relative;
+    display: inline-block;
+    padding-bottom: 5px;
+    color: #171717;
+    font-weight: 400;
+}
+
+.list-product h1::after {
+    content: "";
+    left: 0;
+    bottom: 0;
+    width: 0;
+    position: absolute;
+    background-color: #61a6ff;
+    height: 4px;
+    transition: 0.3s ease;
+}
+
+.list-product h1:hover::after {
+    width: 100%;
+}
+
+.listproduct-format-main {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr 1fr 1fr 1fr 1fr;
+    gap: 10px;
+    width: 100%;
+    padding: 20px 0px;
+    color: #454545;
+    font-size: 15px;
+    font-weight: 400;
+}
+
+.listproduct-format {
+    align-items: center;
+    font-weight: 400;
+}
+
+.actions button {
+    position: relative;
+    width: 100px;
+    height: 40px;
+    right: 20px;
+    margin: 30px 20px;
+    border: 1px solid #61a6ff;
+    background-color: transparent;
+    color: #61a6ff;
+    font-weight: 500;
+    cursor: pointer;
+    transition: 0.1s ease-in-out;
+}
+
+.actions button:hover {
+    background-color: #61a6ff;
+    border-radius: 6px;
+    transform: scale(1.1);
+    color: #fff;
+}
+
+.listproduct-product-icon {
+    height: 80px;
+    transition: 0.2s ease-in;
+}
+
+.listproduct-product-icon:hover {
+    transform: scale(1.1);
+}
+
+.listproduct-remove-icon {
+    position: relative;
+    right: 50px;
+    cursor: pointer;
+    margin: auto;
+    transition: 0.2s ease-in-out;
+}
+
+.listproduct-remove-icon:hover {
+    transform: scale(1.2);
+    rotate: 90deg;
+}
+
+.listproduct-allproducts {
+    overflow-y: auto;
+}
+
+@media(max-width:800px) {
+    .list-product {
+        box-sizing: border-box;
+        width: 95%;
+        height: 100%;
+        padding: 10px 30px;
+        margin: 20px auto;
+    }
+    .listproduct-format-main {
+        padding: 15px 0px;
+        color: #454545;
+        font-size: 12px;
+    }
+    .listproduct-product-icon {
+        height: 60%;
+    }
+}

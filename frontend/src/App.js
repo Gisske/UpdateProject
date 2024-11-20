@@ -8,7 +8,11 @@ import LoginSignup from "./Pages/LoginSignup";
 import Cart from "./Pages/Cart";
 import { Footer } from "./Components/Footer/Footer";
 import men_banner from "./Components/Assets/shirt.jpg";
-import women_banner from "./Components/Assets/shirt.jpg";
+import women_banner from "./Components/Assets/fashion3.webp";
+import shop_banner from "./Components/Assets/shop.jpg";
+import line_banner from "./Components/Assets/line.jpg";
+import shoes_banner from "./Components/Assets/shoesbanner.jpg";
+
 
 function App() {
     return ( <
@@ -21,6 +25,9 @@ function App() {
         Routes >
         <
         Route path = "/"
+        element = { < LoginSignup / > }
+        />{" "} <
+        Route path = "/shop"
         element = { < Shop / > }
         />{" "} <
         Route path = "/mens"
@@ -34,17 +41,17 @@ function App() {
         }
         />{" "} <
         Route path = "/shirt"
-        element = { < ShopCategory banner = { men_banner }
+        element = { < ShopCategory banner = { shop_banner }
             category = "เสื้อช็อป" / >
         }
         />{" "} <
         Route path = "/ruls"
-        element = { < ShopCategory banner = { women_banner }
+        element = { < ShopCategory banner = { line_banner }
             category = "เข้มขัด" / >
         }
         />{" "} <
         Route path = "/shose"
-        element = { < ShopCategory banner = { women_banner }
+        element = { < ShopCategory banner = { shoes_banner }
             category = "รองเท้า" / >
         }
         />{" "} <
@@ -57,10 +64,7 @@ function App() {
         Route > { " " } <
         Route path = "/cart"
         element = { < Cart / > }
-        />{" "} <
-        Route path = "/login"
-        element = { < LoginSignup / > }
-        />{" "} < /
+        />{" "}  < /
         Routes > { " " } <
         Footer / >
         <

@@ -1,7 +1,9 @@
 .shopcategory-banner {
     display: block;
     margin: 30px auto;
-    width: 100%;
+    width: 85%;
+    height: 500px;
+    object-fit: cover;
 }
 
 .shopcategory-indexSort {
@@ -45,7 +47,8 @@
 @media(max-width:1280px) {
     .shopcategory-banner {
         margin: 20px;
-        width: 90%;
+        width: 95%;
+        height: 450px;
     }
     .shopcategory-indexSort {
         width: 90%;
@@ -76,10 +79,11 @@
 
 @media(max-width:800px) {
     .shopcategory-banner {
-        width: 95%;
+        width: 90%;
+        height: 300px;
     }
     .shopcategory-products {
-        width: 95%;
+        grid-template-columns: 1fr 1fr;
     }
     .shopcategory-loadmore {
         margin: 60px auto;

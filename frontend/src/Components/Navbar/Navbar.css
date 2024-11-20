@@ -52,11 +52,12 @@
 
 .nav-menu li p {
     color: #000;
+    margin: 10px;
 }
 
 .nav-menu hr {
     border: none;
-    width: 80%;
+    width: 20%;
     height: 3px;
     border-radius: 10px;
     background-color: #61a6ff;
@@ -191,6 +192,10 @@
         width: 30px;
         rotate: -90deg;
         transition: 0.5s;
+        cursor: pointer;
+    }
+    .nav-dropdown:hover {
+        transform: scale(1.1);
     }
     .nav-menu {
         display: none;
@@ -214,6 +219,47 @@
     .navbar {
         padding: 10px 0px;
     }
+    .navbar-logo {
+        transform: scale(0.8);
+    }
+    .nav-menu {
+        height: 70px;
+        top: 80px;
+    }
+    .nav-login-cart {
+        transform: scale(0.8);
+    }
+    .nav-dropdown {
+        display: flex;
+        position: relative;
+        left: 20px;
+        width: 30px;
+        rotate: -90deg;
+        transition: 0.5s;
+        cursor: pointer;
+    }
+    .nav-dropdown:hover {
+        transform: scale(1.1);
+    }
+    .nav-menu {
+        display: none;
+        height: 80px;
+        width: 100%;
+        position: absolute;
+        background: white;
+        justify-content: center;
+        padding-bottom: 20px;
+        top: 60px;
+    }
+    .nav-menu-visible {
+        display: inline-table;
+    }
+    .nav-dropdown.open {
+        transform: rotate(90deg);
+    }
+    .title-logo {
+        display: none;
+    }
 }
 
 @media(max-width:500px) {
@@ -230,5 +276,36 @@
     }
     .nav-login-cart {
         transform: scale(0.8);
+    }
+    .nav-dropdown {
+        display: flex;
+        position: relative;
+        left: 20px;
+        width: 30px;
+        rotate: -90deg;
+        transition: 0.5s;
+        cursor: pointer;
+    }
+    .nav-dropdown:hover {
+        transform: scale(1.1);
+    }
+    .nav-menu {
+        display: none;
+        height: 80px;
+        width: 100%;
+        position: absolute;
+        background: white;
+        justify-content: center;
+        padding-bottom: 20px;
+        top: 60px;
+    }
+    .nav-menu-visible {
+        display: inline-table;
+    }
+    .nav-dropdown.open {
+        transform: rotate(90deg);
+    }
+    .title-logo {
+        display: none;
     }
 }

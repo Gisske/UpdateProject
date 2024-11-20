@@ -17,6 +17,7 @@
 .productdisplay-img-list img {
     height: 163px;
     transition: 0.2s ease-in-out;
+    border-radius: 10px;
 }
 
 .productdisplay-img-list img:hover {
@@ -28,6 +29,7 @@
     height: 700px;
     object-fit: cover;
     transition: 0.2s;
+    border-radius: 15px;
 }
 
 .productdisplay-main-img:hover {

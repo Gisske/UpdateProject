@@ -82,6 +82,17 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    animation: 1s alternate infinite;
+    animation-name: hero-right;
+}
+
+@keyframes hero-right {
+    from {
+        transform: translateY(0);
+    }
+    to {
+        transform: translateY(-40px);
+    }
 }
 
 @media(max-width:1280px) {
