@@ -4,9 +4,8 @@
     padding-top: 30px;
     gap: 20px;
     width: 100%;
-    max-width: 250px;
     height: 100vh;
-    background: white;
+    background: rgb(231, 231, 231);
 }
 
 .sidebar-item {
@@ -24,7 +23,7 @@
 }
 
 .sidebar-item:hover {
-    transform: scale(1.05);
+    transform: scale(1.01);
     background-color: #61a6ff;
     color: #fff;
 }

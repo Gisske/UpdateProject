@@ -90,7 +90,7 @@ const EditProduct = () => {
 
             const result = await response.json();
             if (result.success) {
-                navigate('/products');
+                navigate('/listproduct');
             } else {
                 alert('Failed to update product.');
             }
@@ -103,39 +103,49 @@ const EditProduct = () => {
     return (
         <div className="edit-product-container">
             <div className="edit-product-form">
-                <h2>Edit Product</h2>
+                <h2>แก้ไขสินค้า</h2>
                 <form onSubmit={handleSubmit}>
-                    <label>Product Name</label>
+                    <label>ชื่อสินค้า</label>
                     <input type="text" name="name" value={product.name} onChange={handleChange} />
 
-                    <label>Description</label>
+                    <label>คำอธิบายสินค้า</label>
                     <textarea name="description" value={product.description} onChange={handleChange} />
 
-                    <label>Category</label>
-                    <input type="text" name="category" value={product.category} onChange={handleChange} />
-
-                    <label>Old Price</label>
-                    <input type="number" name="old_price" value={product.old_price} onChange={handleChange} />
-
-                    <label>New Price</label>
-                    <input type="number" name="new_price" value={product.new_price} onChange={handleChange} />
-
-
+                    <label>หมวดหมู่สินค้า</label>
+                    <div className="addproduct-itemfield">
+                        <select value={product.category} onChange={handleChange} name="category" className='add-product-selector'>
+                            <option value="ผู้หญิง">ผู้หญิง</option>
+                            <option value="ผู้ชาย">ผู้ชาย</option>
+                            <option value="เสื้อช็อป">เสื้อช็อป</option>
+                            <option value="เข้มขัด">เข้มขัด</option>
+                            <option value="รองเท้า">รองเท้า</option>
+                        </select>
+                    </div>
+                    <div className="addproduct-price">
+                        <div className="addproduct-itemfield">
+                            <label>ราคา</label>
+                            <input type="number" name="old_price" value={product.old_price} onChange={handleChange} />
+                        </div>
+                        <div className="addproduct-itemfield">
+                            <label>ราคาจริง</label>
+                            <input type="number" name="new_price" value={product.new_price} onChange={handleChange} />
+                        </div>
+                    </div>
                     <div className='uploadimg'>
                         <label htmlFor="file-input">
-                            <label>Image</label>
+                            <label>เลือกรูปภาพ</label>
                             <img src={imageFile ? URL.createObjectURL(imageFile) : upload_area} className='addproduct-thumnail-img' alt="" />
                         </label>
                         <input onChange={handleImageChange} onClick={imageFile} type="file" name='image' id='file-input' hidden />
                         {product.image && (
                             <div>
-                                <p className='Current'>Current Image</p>
+                                <p className='Current'>รูปภาพสินค้าปัจจุบัน</p>
                                 <img src={product.image} alt="Product" className='image' />
                             </div>
                         )}
                     </div>
                     <div className='edit-btn'>
-                        <button type="submit">Save Changes</button>
+                        <button type="submit">บันทึกสินค้า</button>
                     </div>
                 </form>
             </div>

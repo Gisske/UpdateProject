@@ -1,21 +1,32 @@
+/* Container Styling */
+
 .list-product {
     display: flex;
     flex-direction: column;
     align-items: center;
     width: 100%;
-    height: 740px;
-    padding: 10px 50px;
-    margin: 30px;
-    border-radius: 6px;
-    background: white;
+    max-width: 1200px;
+    height: auto;
+    padding: 20px 50px;
+    margin: 20px auto;
+    border-radius: 12px;
+    background: linear-gradient(to bottom, #ffffff, #f9f9f9);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
+
+
+/* Title Styling */
 
 .list-product h1 {
     position: relative;
     display: inline-block;
-    padding-bottom: 5px;
-    color: #171717;
-    font-weight: 400;
+    margin-bottom: 20px;
+    padding-bottom: 8px;
+    color: #333;
+    font-weight: 600;
+    font-size: 24px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .list-product h1::after {
@@ -24,92 +35,119 @@
     bottom: 0;
     width: 0;
     position: absolute;
-    background-color: #61a6ff;
     height: 4px;
-    transition: 0.3s ease;
+    background: linear-gradient(to right, #61a6ff, #4a90e2);
+    transition: width 0.3s ease-in-out;
 }
 
 .list-product h1:hover::after {
     width: 100%;
 }
 
+
+/* Grid Layout */
+
 .listproduct-format-main {
     display: grid;
-    grid-template-columns: 1fr 2fr 1fr 1fr 1fr 1fr 1fr;
-    gap: 10px;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 20px;
     width: 100%;
-    padding: 20px 0px;
-    color: #454545;
-    font-size: 15px;
-    font-weight: 400;
-}
-
-.listproduct-format {
-    align-items: center;
-    font-weight: 400;
-}
-
-.actions button {
-    position: relative;
-    width: 100px;
-    height: 40px;
-    right: 20px;
-    margin: 30px 20px;
-    border: 1px solid #61a6ff;
-    background-color: transparent;
-    color: #61a6ff;
+    padding: 20px 0;
+    color: #555;
+    font-size: 16px;
     font-weight: 500;
-    cursor: pointer;
-    transition: 0.1s ease-in-out;
 }
 
-.actions button:hover {
-    background-color: #61a6ff;
-    border-radius: 6px;
-    transform: scale(1.1);
-    color: #fff;
-}
+
+/* Product Icons */
 
 .listproduct-product-icon {
     height: 80px;
-    transition: 0.2s ease-in;
+    width: 80px;
+    border-radius: 8px;
+    object-fit: cover;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .listproduct-product-icon:hover {
     transform: scale(1.1);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
+
+
+/* Remove Icon */
 
 .listproduct-remove-icon {
     position: relative;
-    right: 50px;
     cursor: pointer;
-    margin: auto;
-    transition: 0.2s ease-in-out;
+    transition: transform 0.3s ease, rotate 0.3s ease;
 }
 
 .listproduct-remove-icon:hover {
-    transform: scale(1.2);
-    rotate: 90deg;
+    transform: scale(1.2) rotate(90deg);
 }
+
+
+/* Buttons */
+
+.actions button {
+    position: relative;
+    width: 120px;
+    height: 40px;
+    margin: 0 auto;
+    border: 2px solid #61a6ff;
+    background-color: transparent;
+    color: #61a6ff;
+    font-weight: 500;
+    font-size: 14px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.actions button:hover {
+    background-color: #61a6ff;
+    color: #fff;
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+
+/* Overflow Control */
 
 .listproduct-allproducts {
     overflow-y: auto;
+    max-height: 600px;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
-@media(max-width:800px) {
+
+/* Responsive Design */
+
+@media (max-width: 800px) {
     .list-product {
-        box-sizing: border-box;
-        width: 95%;
-        height: 100%;
-        padding: 10px 30px;
-        margin: 20px auto;
+        padding: 15px 30px;
+        margin: 15px auto;
     }
     .listproduct-format-main {
-        padding: 15px 0px;
-        color: #454545;
-        font-size: 12px;
+        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+        font-size: 14px;
+        gap: 10px;
     }
     .listproduct-product-icon {
-        height: 60%;
+        height: 60px;
+        width: 60px;
+    }
+    .actions button {
+        width: 100px;
+        font-size: 12px;
     }
 }

@@ -41,7 +41,7 @@ export const Navbar = () => {
                     {menu === "shirt" ? <hr /> : null}
                 </li>
                 <li onClick={() => { setMenu("ruls") }}>
-                    <Link style={{ textDecoration: 'none' }} to='/ruls'><p>เข้มขัด</p></Link>
+                    <Link style={{ textDecoration: 'none' }} to='/ruls'><p>เข็มขัด</p></Link>
                     {menu === "ruls" ? <hr /> : null}
                 </li>
                 <li onClick={() => { setMenu("shose") }}>

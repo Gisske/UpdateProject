@@ -1,3 +1,5 @@
+/* General container styles */
+
 .center {
     position: relative;
     display: flex;
@@ -95,6 +97,9 @@
     transform: scale(1.01);
 }
 
+
+/* Form animations */
+
 .form-container {
     position: absolute;
     top: 0;
@@ -139,6 +144,9 @@
     }
 }
 
+
+/* Social icons */
+
 .social-icons {
     margin: 20px 0;
 }
@@ -153,6 +161,9 @@
     width: 40px;
     height: 40px;
 }
+
+
+/* Toggle container for the sign-in/sign-up transition */
 
 .toggle-container {
     position: absolute;
@@ -229,4 +240,111 @@
 
 .container.active .toggle-right {
     transform: translateX(200%);
+}
+
+
+/* Media Queries for responsiveness */
+
+
+/* Mobile and small tablets */
+
+@media (max-width: 600px) {
+    .container {
+        width: 100%;
+        min-height: 600px;
+        border-radius: 20px;
+        padding: 20px;
+    }
+    .center {
+        margin-top: 40px;
+        padding-bottom: 40px;
+    }
+    .for-h1 {
+        margin-bottom: 30px;
+    }
+    .container button {
+        width: 100%;
+        padding: 15px;
+        font-size: 16px;
+    }
+    .container input {
+        width: 90%;
+        font-size: 15px;
+        height: 40px;
+    }
+    .toggle-container {
+        width: 100%;
+        border-radius: 0;
+    }
+    .toggle {
+        width: 100%;
+    }
+    .toggle-panel {
+        width: 100%;
+        padding: 0 20px;
+    }
+    .toggle-logo {
+        height: 150px;
+    }
+}
+
+
+/* Large mobile devices */
+
+@media (max-width: 800px) {
+    .container {
+        width: 95%;
+        min-height: 600px;
+        padding: 20px;
+    }
+    .container button {
+        padding: 10px 30px;
+        font-size: 16px;
+    }
+    .container input {
+        font-size: 16px;
+        width: 90%;
+        height: 40px;
+    }
+    .toggle-logo {
+        height: 180px;
+    }
+}
+
+
+/* Medium to large tablets */
+
+@media (max-width: 1024px) {
+    .container {
+        width: 85%;
+        min-height: 650px;
+        padding: 30px;
+    }
+    .center {
+        margin-top: 60px;
+    }
+    .container button {
+        width: 90%;
+        padding: 15px;
+        font-size: 18px;
+    }
+    .container input {
+        width: 90%;
+        font-size: 17px;
+        height: 45px;
+    }
+    .toggle-logo {
+        height: 200px;
+    }
+}
+
+
+/* Desktop and larger devices */
+
+@media (min-width: 1280px) {
+    .container {
+        width: 1280px;
+        min-height: 700px;
+        padding: 40px;
+    }
 }

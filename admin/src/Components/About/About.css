@@ -1,0 +1,75 @@
+.about-container {
+    background-color: #f0faff;
+    /* พื้นหลังสีฟ้าอ่อน */
+    color: #333;
+    /* ข้อความสีเข้ม */
+    padding: 2rem;
+    text-align: center;
+}
+
+.logo {
+    width: 170px;
+}
+
+.about-title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    color: #61a6ff;
+    /* สีฟ้าสำหรับหัวข้อ */
+}
+
+.about-description {
+    font-size: 1rem;
+    margin-bottom: 2rem;
+    color: #555;
+    /* สีเทาเข้มสำหรับคำอธิบาย */
+}
+
+.about-services {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.service-card {
+    background-color: #ffffff;
+    /* สีขาวสำหรับการ์ด */
+    padding: 1.5rem;
+    border-radius: 8px;
+    width: 300px;
+    text-align: left;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    /* เพิ่มเงาเล็กน้อย */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid #e0e0e0;
+    /* เส้นขอบอ่อน */
+}
+
+.service-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+    /* เพิ่มเงาเมื่อ hover */
+}
+
+.service-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: #61a6ff;
+    /* สีฟ้าสำหรับไอคอน */
+}
+
+.service-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: #61a6ff;
+    /* สีฟ้าสำหรับชื่อบริการ */
+}
+
+.service-description {
+    font-size: 1rem;
+    color: #555;
+    /* สีเทาเข้มสำหรับคำอธิบาย */
+}

@@ -20,8 +20,6 @@ app.get("/", (req, res) => {
     res.send("Express App is Running");
 });
 
-
-
 // Ensure the upload directory exists (use 'fs' to check and create if needed)
 const fs = require('fs');
 const { log, error } = require("console");
@@ -41,14 +39,14 @@ const upload = multer({ storage: storage });
 
 // Image Upload Endpoint
 app.use('/images', express.static(uploadDir));
-app.post("/upload", upload.single('product'), (req, res) => {
+app.post('/upload', upload.single('product'), (req, res) => {
     res.json({
         success: 1,
         image_url: `http://localhost:${port}/images/${req.file.filename}`
     });
 });
 
-// Product Schema
+//Product Schema
 const Product = mongoose.model("product", {
     id: {
         type: Number,
@@ -132,26 +130,130 @@ app.get('/allproducts', async(req, res) => {
     }
 });
 
+// API Endpoint to Get All Users
+app.get('/api/users', async(req, res) => {
+    try {
+        // กรองผู้ใช้ที่มี role เป็น 'user' และเลือกแค่ฟิลด์ที่ต้องการ
+        const users = await Users.find({ role: { $in: ['user', 'admin', 'seller'] } }, 'name email role date password');
+
+        res.json(users); // ส่งข้อมูลผู้ใช้กลับไป
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        res.status(500).json({ error: 'Server Error' }); // ส่ง error response หากเกิดปัญหากับการดึงข้อมูล
+    }
+});
+
+app.post('/api/users', async(req, res) => {
+    try {
+        // ดึงข้อมูลจาก request body
+        const { name, email, role, password, date } = req.body;
+
+        // ตรวจสอบว่าข้อมูลครบถ้วน
+        if (!name || !email || !role || !password || !date) {
+            return res.status(400).json({ error: 'All fields are required: name, email, and role' });
+        }
+
+        // ตรวจสอบว่า email ซ้ำหรือไม่
+        const existingUser = await Users.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({ error: 'Email already exists' });
+        }
+
+        // สร้างผู้ใช้ใหม่
+        const newUser = new Users({
+            name,
+            email,
+            role,
+            password,
+            date
+        });
+
+        // บันทึกผู้ใช้ในฐานข้อมูล
+        await newUser.save();
+
+        // ส่ง response กลับไปพร้อมผู้ใช้ที่เพิ่งถูกเพิ่ม
+        res.status(201).json(newUser);
+    } catch (error) {
+        console.error('Error adding user:', error);
+        res.status(500).json({ error: 'Server Error' });
+    }
+});
+
+// ลบผู้ใช้
+app.delete('/api/users/:id', async(req, res) => {
+    try {
+        const { id } = req.params;
+        const deletedUser = await Users.findByIdAndDelete(id);
+        if (!deletedUser) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        res.json({ message: 'User deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error deleting user', error });
+    }
+});
+
+// แก้ไขข้อมูลผู้ใช้
+app.put('/api/users/:id', async(req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, email, role, password } = req.body; // สามารถเพิ่มฟิลด์อื่น ๆ ได้
+        const updatedUser = await Users.findByIdAndUpdate(id, { name, email, role, password }, { new: true });
+        if (!updatedUser) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        res.json(updatedUser);
+    } catch (error) {
+        res.status(500).json({ message: 'Error updating user', error });
+    }
+});
+
+// Middleware to fetch user from JWT token
+const fetchUser = async(req, res, next) => {
+    const token = req.header('auth-token');
+    if (!token) {
+        return res.status(401).send({ errors: "Please authenticate using a valid token" });
+    } else {
+        try {
+            const data = jwt.verify(token, 'secret_ecom');
+            req.user = data.user;
+            next(); // Proceed to the next middleware or route handler
+        } catch (error) {
+            return res.status(401).send({ errors: "Please authenticate using a valid token" });
+        }
+    }
+};
+
 // User Schema
 const Users = mongoose.model('Users', {
     name: {
-        type: Number,
+        type: Number, // แก้ไข type ให้ตรงกับความหมาย
+        required: true,
     },
     email: {
         type: String,
         unique: true,
+        required: true,
     },
     password: {
-        type: String
+        type: String,
+        required: true,
     },
     cartData: {
         type: Object,
+        default: {},
+    },
+    role: {
+        type: String,
+        enum: ['user', 'admin', 'seller'], // กำหนดค่าสิทธิ์ได้เฉพาะ 'user' หรือ 'admin'
+        default: 'user', // ค่าเริ่มต้นเป็นผู้ใช้ทั่วไป
     },
     date: {
         type: Date,
         default: Date.now,
     }
 });
+
 
 // User Signup Endpoint
 app.post('/signup', async(req, res) => {
@@ -191,31 +293,62 @@ app.post('/signup', async(req, res) => {
 
 
 // Creating Endpoint Login with Server
+// Server: /login Endpoint
 app.post('/login', async(req, res) => {
-    console.log("Request Body: ", req.body);
     try {
         const { email, password } = req.body;
         if (!email || !password) {
             return res.json({ success: false, error: "Please provide both email and password" });
         }
+
         let user = await Users.findOne({ email });
         if (user) {
-            console.log("User Found: ", user);
-            const passCompare = password === user.password; // เปลี่ยนเป็น bcrypt หากใช้
+            const passCompare = password === user.password; // ใช้ bcrypt เพื่อความปลอดภัยเพิ่ม
             if (passCompare) {
-                const data = { user: { id: user.id } };
-                const token = jwt.sign(data, 'secret_ecom');
-                return res.json({ success: true, token });
+                // สร้าง Token พร้อม role
+                const data = { user: { id: user.id, role: user.role } };
+                const token = jwt.sign(data, 'secret_ecom', { expiresIn: '1h' }); // เพิ่ม expiresIn
+                return res.json({ success: true, token, role: user.role }); // ส่ง role กลับไปด้วย
             } else {
-                return res.json({ success: false, error: "Wrong Password" });
+                return res.json({ success: false, error: "รหัสผ่านไม่ถูกต้อง" });
             }
         } else {
-            return res.json({ success: false, error: "Wrong Email Id" });
+            return res.json({ success: false, error: "อีเมลไม่ถูกต้อง" });
         }
     } catch (err) {
         console.error(err.message);
         res.status(500).json({ success: false, error: err.message });
     }
+});
+
+const checkRole = (role) => (req, res, next) => {
+    const token = req.header('auth-token');
+    if (!token) return res.status(401).json({ success: false, error: "Access Denied" });
+
+    try {
+        const verified = jwt.verify(token, 'secret_ecom');
+        const userRole = verified.user.role;
+
+        if (userRole !== role) {
+            return res.status(403).json({ success: false, error: "Access Denied: Insufficient Role" });
+        }
+
+        req.user = verified.user;
+        next(); // ไปที่ endpoint ถัดไป
+    } catch (err) {
+        res.status(400).json({ success: false, error: "Invalid Token" });
+    }
+};
+
+
+// เส้นทางสำหรับ admin เท่านั้น
+app.get('/admin/dashboard', checkRole('admin'), (req, res) => {
+    res.json({ success: true, message: "Welcome Admin Dashboard" });
+});
+
+// เส้นทางสำหรับ user เท่านั้น
+app.get('/user/profile', checkRole('user'), (req, res) => {
+    res.json({ success: true, message: "Welcome User Profile" });
 });
 
 
@@ -226,9 +359,7 @@ app.get('/newcollections', async(req, res) => {
     let newcollection = products.slice(0).slice(0);
     console.log("NewCollection Fetched");
     res.send(newcollection)
-
 })
-
 
 //creating endpoint for popular women section
 app.get('/popularinwomen', async(req, res) => {
@@ -245,23 +376,6 @@ app.get('/popularinmen', async(req, res) => {
     console.log("Popular In Men");
     res.send(popular_in_men);
 })
-
-// Middleware to fetch user from JWT token
-const fetchUser = async(req, res, next) => {
-    const token = req.header('auth-token');
-    if (!token) {
-        return res.status(401).send({ errors: "Please authenticate using a valid token" });
-    } else {
-        try {
-            const data = jwt.verify(token, 'secret_ecom');
-            req.user = data.user;
-            next(); // Proceed to the next middleware or route handler
-        } catch (error) {
-            return res.status(401).send({ errors: "Please authenticate using a valid token" });
-        }
-    }
-};
-
 
 //creating endpoint for adding products in cartData
 app.post('/addtocart', fetchUser, async(req, res) => {

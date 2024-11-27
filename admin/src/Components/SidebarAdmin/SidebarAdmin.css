@@ -1,0 +1,71 @@
+.sidebar-admin {
+    display: flex;
+    flex-direction: column;
+    padding-top: 30px;
+    width: 100%;
+    height: 100vh;
+    background: rgb(231, 231, 231);
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.sidebar h3 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.sidebar-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    /* Create responsive grid */
+    gap: 20px;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-admin {
+    height: 250px;
+    display: block;
+    margin: 50px;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+    border-radius: 10px;
+    background: #f6f6f6;
+    gap: 20px;
+    cursor: pointer;
+    transition: 0.2s ease-in-out;
+    color: #000;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    top: 50px;
+}
+
+.item-icon {
+    margin-top: 40px;
+}
+
+.sidebar-admin p {
+    font-size: 24px;
+    font-weight: 400;
+}
+
+.sidebar-admin:hover {
+    transform: scale(1.05);
+    background-color: #61a6ff;
+    color: #fff;
+}
+
+@media(max-width: 800px) {
+    .sidebar {
+        flex-direction: row;
+        justify-content: center;
+        height: auto;
+    }
+    .sidebar-grid {
+        grid-template-columns: 1fr;
+        /* Stack items vertically on small screens */
+    }
+}

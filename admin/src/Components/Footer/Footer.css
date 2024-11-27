@@ -1,0 +1,142 @@
+.footer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+    background-color: white;
+    box-shadow: 1px 3px -2px black;
+    padding-top: 30px;
+}
+
+.footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.footer-logo p {
+    color: #383838;
+    font-size: 46px;
+    font-weight: 400;
+}
+
+.footer-logo img {
+    width: 140px;
+}
+
+.footer-links {
+    display: flex;
+    list-style: none;
+    gap: 50px;
+    color: #252525;
+    font-size: 20px;
+}
+
+.footer-links li {
+    position: relative;
+    display: inline-block;
+    padding-bottom: 5px;
+    color: #000;
+    cursor: pointer;
+    transition: 0.3s ease-in-out;
+}
+
+.footer-links li:hover {
+    transform: scale(1.1);
+}
+
+.footer-links li::after {
+    content: "";
+    left: 0;
+    bottom: 0;
+    width: 0;
+    position: absolute;
+    background-color: #61a6ff;
+    height: 4px;
+    transition: 0.3s ease;
+}
+
+.footer-links li:hover::after {
+    width: 100%;
+}
+
+.footer-links li::before:hover {
+    content: "";
+    border-bottom: 1px solid #61a6ff;
+    width: 100%;
+    position: absolute;
+}
+
+.footer-social-icon {
+    display: flex;
+    gap: 20px;
+    transition: 0.2s ease-in-out;
+}
+
+.footer-icons-container {
+    transition: 0.2s ease-in-out;
+}
+
+.footer-icons-container:hover {
+    transform: scale(1.2);
+}
+
+.footer-icons-container {
+    padding: 10px;
+    padding-bottom: 6px;
+    background: #fbfbfb;
+    border: 1px solid #ebebeb;
+    border-radius: 15px;
+    cursor: pointer;
+}
+
+.footer-icons-container:hover {
+    background-color: #61a6ff;
+    color: white;
+}
+
+.footer-copyright {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    grid-area: 30px;
+    width: 100%;
+    margin-bottom: 30px;
+    color: #1a1a1a;
+    font-size: 20px;
+}
+
+.footer-copyright hr {
+    width: 80px;
+    border: none;
+    border-radius: 10px;
+    height: 3px;
+    background: #c7c7c7;
+}
+
+@media(max-width:800px) {
+    .footer {
+        gap: 20px;
+    }
+    .footer-logo {
+        gap: 10px;
+        align-items: end;
+    }
+    .footer-logo img {
+        width: 40px;
+    }
+    .footer-logo p {
+        font-size: 25px;
+    }
+    .footer-links {
+        font-size: 14px;
+        gap: 10px;
+    }
+    .footer-social-icon img {
+        width: 22px;
+    }
+    .footer-copyright {
+        font-size: 13px;
+    }
+}

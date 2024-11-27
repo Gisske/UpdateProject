@@ -52,33 +52,33 @@ const AddProduct = () => {
 
     return (
         <div className='add-product'>
-            <h1>Add Products</h1>
+            <h1>เพิ่มสินค้า</h1>
             <div className="addproduct-itemfield">
-                <p>Product title</p>
-                <input value={productDetails.name} onChange={changehandler} type="text" name='name' placeholder='Type Here' />
+                <p>ชื่อสินค้า</p>
+                <input value={productDetails.name} onChange={changehandler} type="text" name='name' placeholder='กรอกรายละเอียด ชื่อสินค้า' />
             </div>
             <div className="addproduct-itemfield">
-                <p>description</p>
-                <input value={productDetails.description} onChange={changehandler} type="text" name='description' placeholder='Type here' />
+                <p>คำอธิบายสินค้า</p>
+                <textarea name="description" placeholder='กรอกรายละเอียด คำอธิบายสินค้า' value={productDetails.description} onChange={changehandler} />
             </div>
             <div className="addproduct-price">
                 <div className="addproduct-itemfield">
-                    <p>Price</p>
-                    <input value={productDetails.old_price} onChange={changehandler} type="text" name='old_price' placeholder='Type here' />
+                    <p>ราคา</p>
+                    <input value={productDetails.old_price} onChange={changehandler} type="text" name='old_price' placeholder='กรอกรายละเอียด ราคา' />
                 </div>
                 <div className="addproduct-itemfield">
-                    <p>Offer Price</p>
-                    <input value={productDetails.new_price} onChange={changehandler} type="text" name='new_price' placeholder='Type here' />
+                    <p>ราคาจริง</p>
+                    <input value={productDetails.new_price} onChange={changehandler} type="text" name='new_price' placeholder='กรอกรายละเอียด ราคาจริง' />
                 </div>
             </div>
             <div className="addproduct-itemfield">
-                <p>Product Category</p>
+                <p>หมวดหมู่สินค้า</p>
                 <select value={productDetails.category} onChange={changehandler} name="category" className='add-product-selector'>
-                    <option value="ผู้หญิง">women</option>
-                    <option value="ผู้ชาย">men</option>
-                    <option value="เสื้อช็อป">shop</option>
-                    <option value="เข้มขัด">line</option>
-                    <option value="รองเท้า">shoes</option>
+                    <option value="ผู้หญิง">ผู้หญิง</option>
+                    <option value="ผู้ชาย">ผู้ชาย</option>
+                    <option value="เสื้อช็อป">เสื้อช็อป</option>
+                    <option value="เข็มขัด">เข็มขัด</option>
+                    <option value="รองเท้า">รองเท้า</option>
                 </select>
             </div>
             <div className="addproduct-itemfield">
@@ -87,7 +87,7 @@ const AddProduct = () => {
                 </label>
                 <input onClick={imageHandler} type="file" name='image' id='file-input' hidden />
             </div>
-            <button onClick={() => (Add_Product())} className='addproduct-btn'>ADD</button>
+            <button onClick={() => (Add_Product())} className='addproduct-btn'>เพิ่มสินค้า</button>
         </div>
     )
 }

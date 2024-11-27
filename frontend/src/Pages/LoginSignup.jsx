@@ -3,13 +3,18 @@ import "./CSS/LoginSignUp.css";
 import Logo_img from '../Components/Assets/logo.png'
 import { FaInstagram, FaFacebook, FaLine } from 'react-icons/fa';
 
-const LoginSignup = () => {
+const LoginSignup = ({ triggerError }) => {
   const [state, setState] = useState("Login"); // จัดการสถานะ Login หรือ Signup
   const [formData, setFormData] = useState({
     username: "",
     password: "",
     email: "",
   });
+
+  const handleError = (message) => {
+    triggerError(message); // เรียก Error Popup พร้อมข้อความที่ส่งมา
+  };
+
 
   const changeHandler = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -20,38 +25,61 @@ const LoginSignup = () => {
 
     // ตรวจสอบว่า email และ password ถูกกรอกครบถ้วน
     if (!email || !password) {
-      alert("โปรดกรอก Email และ Password ก่อนเข้าใช้");
+      handleError("โปรดกรอก Email และ Password ก่อนเข้าใช้");
       return;
     }
 
     console.log("Login Function Executed", { formData });
     let responseData;
-    await fetch("http://localhost:4000/login", {
-      method: "POST",
-      headers: {
-        Accept: "application/form-data",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    })
-      .then((response) => response.json())
-      .then((data) => (responseData = data));
+    try {
+      // Make the POST request to login endpoint
+      await fetch("http://localhost:4000/login", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      })
+        .then((response) => response.json())
+        .then((data) => (responseData = data));
 
-    if (responseData.success) {
-      localStorage.setItem("auth-token", responseData.token);
-      window.location.replace("/shop");
-    } else {
-      alert(responseData.errors);
+      if (responseData.success) {
+        const role = responseData.role; // รับ role จาก Backend
+
+        if (role === "user") { // อนุญาตเฉพาะ user เท่านั้น
+          localStorage.setItem("auth-token", responseData.token);
+
+          // ตรวจสอบว่า token ถูกต้องหรือไม่
+          const token = localStorage.getItem("auth-token");
+          if (!token) {
+            handleError("ไม่พบ Token, กรุณาลองใหม่");
+            return;
+          }
+
+          // Redirect to the shop page after successful login
+          window.location.replace("/shop");
+        } else {
+          handleError("บัญชีนี้ไม่ได้รับอนุญาตให้เข้าสู่ระบบ");
+        }
+      } else {
+        handleError(responseData.errors || "เกิดข้อผิดพลาดในการเข้าสู่ระบบ");
+      }
+    } catch (error) {
+      console.error(error);
+      handleError("เกิดข้อผิดพลาด กรุณาลองใหม่ในภายหลัง");
     }
   };
 
 
+
+
+
   const signup = async () => {
-    console.log("Sign Up Function Executed", { formData });
-    const { username, email, password } = formData;
+    const { username, email, password, role } = formData; // เพิ่ม role
 
     if (!username || !email || !password) {
-      alert("กรุณากรอกข้อมูลให้ครบถ้วนทั้งชื่อผู้ใช้, อีเมล และ รหัสผ่าน");
+      handleError("กรุณากรอกข้อมูลให้ครบถ้วนทั้งชื่อผู้ใช้, อีเมล และ รหัสผ่าน");
       return;
     }
 
@@ -62,7 +90,7 @@ const LoginSignup = () => {
           "Content-Type": "application/json",
           Accept: "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ username, email, password, role: role || "user" }), // ส่ง role ไปยัง Backend
       });
 
       const responseData = await response.json();
@@ -71,13 +99,14 @@ const LoginSignup = () => {
         localStorage.setItem("auth-token", responseData.token);
         window.location.replace("/");
       } else {
-        alert(responseData.errors || "สมัครสมาชิกไม่สำเร็จ กรุณาลองใหม่");
+        handleError(responseData.errors || "รหัสนักศึกษา และ อีเมล ซ้ำ! กรุณาลองใหม่");
       }
     } catch (error) {
       console.error("เกิดข้อผิดพลาด:", error);
-      alert("เกิดข้อผิดพลาด กรุณาลองใหม่ในภายหลัง");
+      handleError("เกิดข้อผิดพลาด กรุณาลองใหม่ในภายหลัง");
     }
   };
+
 
 
 
@@ -182,4 +211,4 @@ const LoginSignup = () => {
   );
 };
 
-export default LoginSignup;
+export default LoginSignup; 
