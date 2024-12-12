@@ -142,7 +142,7 @@ app.get('/allproducts', async(req, res) => {
 app.get('/api/users', async(req, res) => {
     try {
         // กรองผู้ใช้ที่มี role เป็น 'user' และเลือกแค่ฟิลด์ที่ต้องการ
-        const users = await Users.find({ role: { $in: ['user', 'admin', 'seller'] } }, 'name email role date password');
+        const users = await Users.find({ role: { $in: ['user', 'admin', 'seller'] } }, 'name idstudent email role date password');
 
         res.json(users); // ส่งข้อมูลผู้ใช้กลับไป
     } catch (error) {
@@ -154,10 +154,10 @@ app.get('/api/users', async(req, res) => {
 app.post('/api/users', async(req, res) => {
     try {
         // ดึงข้อมูลจาก request body
-        const { idstudent, email, role, password, date } = req.body;
+        const { name, idstudent, email, role, password, date } = req.body;
 
         // ตรวจสอบว่าข้อมูลครบถ้วน
-        if (!idstudent || !email || !role || !password || !date) {
+        if (!name || !idstudent || !email || !role || !password || !date) {
             return res.status(400).json({ error: 'All fields are required: name, email, and role' });
         }
 
@@ -169,6 +169,7 @@ app.post('/api/users', async(req, res) => {
 
         // สร้างผู้ใช้ใหม่
         const newUser = new Users({
+            name,
             idstudent,
             email,
             role,
@@ -205,8 +206,8 @@ app.delete('/api/users/:id', async(req, res) => {
 app.put('/api/users/:id', async(req, res) => {
     try {
         const { id } = req.params;
-        const { idstudent, email, role, password } = req.body; // สามารถเพิ่มฟิลด์อื่น ๆ ได้
-        const updatedUser = await Users.findByIdAndUpdate(id, { idstudent, email, role, password }, { new: true });
+        const { name, idstudent, email, role, password } = req.body; // สามารถเพิ่มฟิลด์อื่น ๆ ได้
+        const updatedUser = await Users.findByIdAndUpdate(id, { name, idstudent, email, role, password }, { new: true });
         if (!updatedUser) {
             return res.status(404).json({ message: 'User not found' });
         }
