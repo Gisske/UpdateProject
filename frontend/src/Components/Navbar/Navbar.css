@@ -8,7 +8,6 @@
 
 .navbar-logo {
     display: flex;
-    align-items: center;
     gap: 10px;
 }
 
@@ -171,7 +170,7 @@
     }
     .nav-menu {
         gap: 25px;
-        font-size: 14px;
+        font-size: 16px;
     }
     .nav-login-cart button {
         width: 80px;
@@ -188,7 +187,7 @@
     .nav-dropdown {
         display: block;
         position: relative;
-        right: 30px;
+        right: 70px;
         width: 30px;
         rotate: -90deg;
         transition: 0.5s;
@@ -200,12 +199,12 @@
     .nav-menu {
         display: none;
         height: 80px;
-        width: 100%;
+        width: 20%;
         position: absolute;
+        left: 0;
         background: white;
-        justify-content: center;
         padding-bottom: 20px;
-        top: 55px;
+        top: 70px;
     }
     .nav-menu-visible {
         display: inline-table;

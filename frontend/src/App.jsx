@@ -15,6 +15,7 @@ import line_banner from "./Components/Assets/line.jpg";
 import shoes_banner from "./Components/Assets/shoesbanner.jpg";
 import ErrorPopup from "./ErrorPopup/Error";
 import PrivateRoute from "./Private/Private"; // import PrivateRoute
+import CartItems from "./Components/CartItems/CartItems";
 
 function App() {
     const location = useLocation();
@@ -53,7 +54,7 @@ function App() {
                 <Route path="product" element={<PrivateRoute><Product /></PrivateRoute>}>
                     <Route path=":productId" element={<PrivateRoute><Product /></PrivateRoute>} />
                 </Route>
-                <Route path="/cart" element={<PrivateRoute><Cart /></PrivateRoute>} />
+                <Route path="/cart" element={<PrivateRoute ><CartItems triggerError={triggerError} /></PrivateRoute>} />
             </Routes>
             {!isLoginPage && <PrivateRoute><Footer /></PrivateRoute>} {/* Hide Footer on login page */}
         </div>

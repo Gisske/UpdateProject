@@ -14,7 +14,9 @@ const Item = (props) => {
         <div className="item-price-old">
           ${props.old_price}<span>-บาท</span>
         </div>
+
       </div>
+      <Link to={`/product/${props.id}`}><button className='item-button'>เลือกดูสินค้าได้เลย</button></Link>
     </div>
   );
 }

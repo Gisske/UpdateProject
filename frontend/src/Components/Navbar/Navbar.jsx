@@ -18,11 +18,12 @@ export const Navbar = () => {
 
     return (
         <div className='navbar'>
+            <img className='nav-dropdown' onClick={dropdown_toggle} src={nav_dropdown} alt="" />
             <div className="navbar-logo">
                 <Link style={{ textDecoration: 'none' }} to='/shop'><img src={logo} alt="Logo" /></Link>
                 <p className='title-logo'>เครื่องแบบนักศึกษา</p>
             </div>
-            <img className='nav-dropdown' onClick={dropdown_toggle} src={nav_dropdown} alt="" />
+
             <ul ref={menuRef} className="nav-menu">
                 <li onClick={() => { setMenu("shop") }}>
                     <Link style={{ textDecoration: 'none' }} to='/shop'><p>หน้าสินค้า</p></Link>
@@ -49,7 +50,9 @@ export const Navbar = () => {
                     {menu === "shose" ? <hr /> : null}
                 </li>
             </ul>
+
             <div className="nav-login-cart">
+
                 {localStorage.getItem('auth-token')
                     ? <button onClick={() => { localStorage.removeItem('auth-token'); window.location.replace('/') }}>Logout</button>
                     : <Link to='/'>
@@ -60,6 +63,7 @@ export const Navbar = () => {
                 <Link className='carticon' to='/cart'><img src={cart_icon} alt="Cart Icon" /></Link>
                 <div className="nav-cart-count">{getTotalCartItem()}</div>
             </div>
+
         </div>
     );
 }

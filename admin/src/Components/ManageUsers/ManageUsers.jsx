@@ -3,7 +3,7 @@ import './ManageUsers.css';
 
 const ManageUsers = () => {
     const [users, setUsers] = useState([]);
-    const [newUser, setNewUser] = useState({ name: '', email: '', role: 'user', password: '', date: Date });
+    const [newUser, setNewUser] = useState({ idstudent: '', email: '', role: 'user', password: '', date: Date });
     const [editingUser, setEditingUser] = useState(null);
 
     useEffect(() => {
@@ -21,7 +21,7 @@ const ManageUsers = () => {
 
     const editUser = (user) => {
         setEditingUser(user);
-        setNewUser({ name: user.name, email: user.email, role: user.role, password: user.password, date: user.date });
+        setNewUser({ idstudent: user.idstudent, email: user.email, role: user.role, password: user.password, date: user.date });
     };
 
     const updateUser = () => {
@@ -34,7 +34,7 @@ const ManageUsers = () => {
             .then((updatedUser) => {
                 setUsers(users.map(user => user._id === updatedUser._id ? updatedUser : user));
                 setEditingUser(null);
-                setNewUser({ name: '', email: '', role: 'user', password: '' });
+                setNewUser({ idstudent: '', email: '', role: 'user', password: '', date: Date });
             })
             .catch((error) => console.error('Error updating user:', error));
     };
@@ -48,7 +48,7 @@ const ManageUsers = () => {
             .then((response) => response.json())
             .then((addedUser) => {
                 setUsers([...users, addedUser]);
-                setNewUser({ name: '', email: '', role: 'user', password: '', date: Date });
+                setNewUser({ idstudent: '', email: '', role: 'user', password: '', date: Date });
             })
             .catch((error) => console.error('Error adding user:', error));
     };
@@ -64,9 +64,9 @@ const ManageUsers = () => {
                     <div className="form-fields">
                         <input
                             type="text"
-                            placeholder="Name"
-                            value={newUser.name}
-                            onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
+                            placeholder="ID"
+                            value={newUser.idstudent}
+                            onChange={(e) => setNewUser({ ...newUser, idstudent: e.target.value })}
                         />
                         <input
                             type="email"
@@ -82,6 +82,7 @@ const ManageUsers = () => {
                         />
                         <input
                             type="date"
+                            placeholder="date"
                             value={newUser.date}
                             onChange={(e) => setNewUser({ ...newUser, date: e.target.value })}
                         />
@@ -91,7 +92,7 @@ const ManageUsers = () => {
                         >
                             <option value="user">User</option>
                             <option value="admin">Admin</option>
-                            <option value="moderator">Moderator</option>
+                            <option value="seller">seller</option>
                         </select>
                     </div>
                     <button className="btn-submit" onClick={editingUser ? updateUser : addUser}>
@@ -115,7 +116,7 @@ const ManageUsers = () => {
                             {users.map((user, index) => (
                                 <tr key={user._id}>
                                     <td>{index + 1}</td>
-                                    <td>{user.name}</td>
+                                    <td>{user.idstudent}</td>
                                     <td>{user.email}</td>
                                     <td>{user.role}</td>
                                     <td>{user.password}</td>

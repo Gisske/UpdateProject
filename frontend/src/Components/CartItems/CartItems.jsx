@@ -1,15 +1,59 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import './CartItems.css';
 import { ShopContext } from '../../Context/ShopContext';
 import remove_icon from '../Assets/cart_cross_icon.png';
 import add_icon from '../Assets/addcart.png';
 
-export const CartItems = () => {
-    const { getTotalCartAmount, all_product, cartItems, removeToCart, addToCart } = useContext(ShopContext);
+export const CartItems = ({ triggerError }) => {
+    const { getTotalCartAmount, all_product, cartItems, removeToCart, addToCart, user } = useContext(ShopContext);
+    const [showPopup, setShowPopup] = useState(false); // State สำหรับจัดการ popup
+
+
+    const handleError = (message) => {
+        triggerError(message); // เรียก Error Popup พร้อมข้อความที่ส่งมา
+    };
 
     if (!all_product || !cartItems) {
         return <div>No products available</div>;
     }
+
+    // ฟังก์ชันสำหรับยืนยันการสั่งซื้อ
+    const handleConfirmOrder = async () => {
+        try {
+            const orderItems = all_product
+                .filter((e) => cartItems[e.id] > 0)
+                .map((e) => ({
+                    productId: e.id,
+                    name: e.name,
+                    quantity: cartItems[e.id],
+                    total: e.new_price * cartItems[e.id],
+                }));
+
+            const orderData = {
+                name: user.name, // สมมติ user มีข้อมูล name ใน context
+                idstudent: user.idstudent,
+                totalAmount: getTotalCartAmount(),
+                items: orderItems,
+            };
+
+            // ส่งข้อมูลคำสั่งซื้อไปยัง backend
+            const response = await fetch('/api/orders', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(orderData),
+            });
+
+            if (response.ok) {
+                alert('คำสั่งซื้อสำเร็จ!');
+                setShowPopup(false); // ปิด popup หลังจากยืนยัน
+            } else {
+                alert('เกิดข้อผิดพลาดในการสั่งซื้อ');
+            }
+        } catch (error) {
+            console.error('Error confirming order:', error);
+            handleError('เกิดข้อผิดพลาดในการสั่งซื้อ');
+        }
+    };
 
     return (
         <div className='cartitem'>
@@ -38,7 +82,7 @@ export const CartItems = () => {
                             </div>
                             <hr />
                         </div>
-                    )
+                    );
                 }
                 return null;
             })}
@@ -61,9 +105,37 @@ export const CartItems = () => {
                             <h3>${getTotalCartAmount()}</h3>
                         </div>
                     </div>
-                    <button><span>สั่งซื้อสินค้า</span></button>
+                    <button onClick={() => setShowPopup(true)}><span>สั่งซื้อสินค้า</span></button>
                 </div>
             </div>
+
+            {showPopup && (
+                <div className="popup">
+                    <div className="popup-content">
+                        <h2>ยืนยันคำสั่งซื้อ</h2>
+                        <div className="popup-items">
+                            {all_product.map((e) => {
+                                if (cartItems[e.id] > 0) {
+                                    return (
+                                        <div key={e.id} className="popup-item">
+                                            <img src={e.image} alt="" />
+                                            <p>{e.name}</p>
+                                            <p>จำนวน: {cartItems[e.id]}</p>
+                                            <p>รวม: {e.new_price * cartItems[e.id]} บาท</p>
+                                        </div>
+                                    );
+                                }
+                                return null;
+                            })}
+                        </div>
+                        <div className="popup-total">
+                            <h3>ยอดรวมทั้งหมด: {getTotalCartAmount()} บาท</h3>
+                        </div>
+                        <button onClick={handleConfirmOrder}>ยืนยันคำสั่งซื้อ</button>
+                        <button onClick={() => setShowPopup(false)}>ยกเลิก</button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

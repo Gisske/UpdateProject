@@ -7,6 +7,7 @@ const LoginSignup = ({ triggerError }) => {
   const [state, setState] = useState("Login"); // จัดการสถานะ Login หรือ Signup
   const [formData, setFormData] = useState({
     username: "",
+    idstudent: "",
     password: "",
     email: "",
   });
@@ -76,9 +77,9 @@ const LoginSignup = ({ triggerError }) => {
 
 
   const signup = async () => {
-    const { username, email, password, role } = formData; // เพิ่ม role
+    const { username, idstudent, email, password, role } = formData; // เพิ่ม role
 
-    if (!username || !email || !password) {
+    if (!username || !idstudent || !email || !password) {
       handleError("กรุณากรอกข้อมูลให้ครบถ้วนทั้งชื่อผู้ใช้, อีเมล และ รหัสผ่าน");
       return;
     }
@@ -90,7 +91,7 @@ const LoginSignup = ({ triggerError }) => {
           "Content-Type": "application/json",
           Accept: "application/json",
         },
-        body: JSON.stringify({ username, email, password, role: role || "user" }), // ส่ง role ไปยัง Backend
+        body: JSON.stringify({ username, idstudent, email, password, role: role || "user" }), // ส่ง role ไปยัง Backend
       });
 
       const responseData = await response.json();
@@ -130,8 +131,15 @@ const LoginSignup = ({ triggerError }) => {
             <input
               type="text"
               name="username"
-              placeholder="รหัสนักศึกษา"
+              placeholder="ชื่อนักศึกษา"
               value={formData.username}
+              onChange={changeHandler}
+            />
+            <input
+              type="text"
+              name="idstudent"
+              placeholder="รหัสนักศึกษา"
+              value={formData.idstudent}
               onChange={changeHandler}
             />
             <input

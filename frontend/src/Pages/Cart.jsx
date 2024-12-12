@@ -4,7 +4,7 @@ import { CartItems } from '../Components/CartItems/CartItems'
 export const Cart = () => {
   return (
     <div>
-      <CartItems/>
+      <CartItems />
     </div>
   )
 }
