@@ -255,8 +255,8 @@ const Users = mongoose.model('Users', {
         required: true,
     },
     cartData: {
-        type: Object,
-        default: {},
+        type: Array,
+        default: [],
     },
     role: {
         type: String,
@@ -401,10 +401,23 @@ app.get('/popularinmen', async(req, res) => {
 app.post('/addtocart', fetchUser, async(req, res) => {
     try {
         console.log("Added", req.body.itemId);
+        console.log("req.body", req.body);
 
         // ค้นหาข้อมูลผู้ใช้
         let userData = await Users.findOne({ _id: req.user.id });
-        userData.cartData[req.body.itemId] = (userData.cartData[req.body.itemId] || 0) + 1;
+
+        // ตรวจสอบว่ามีสินค้านี้ในตะกร้าหรือไม่
+        const existingItem = userData.cartData.find(item => item.itemId === req.body.itemId && item.size === req.body.size);
+        if (existingItem) {
+            existingItem.quantity += 1;
+        } else {
+            userData.cartData.push({
+                itemId: req.body.itemId,
+                size: req.body.size,
+                quantity: 1,
+                price: req.body.price
+            });
+        }
 
         // อัปเดตข้อมูลในฐานข้อมูล
         await Users.findOneAndUpdate({ _id: req.user.id }, { cartData: userData.cartData });
@@ -423,9 +436,9 @@ app.post('/removefromcart', fetchUser, async(req, res) => {
     try {
         console.log("Remove", req.body.itemId);
         let userData = await Users.findOne({ _id: req.user.id });
-        if (userData.cartData[req.body.itemId] > 0) {
-            userData.cartData[req.body.itemId] -= 1;
-        }
+        // ลบสินค้าจากตะกร้า
+        userData.cartData = userData.cartData.filter(item => item.itemId !== req.body.itemId || item.size !== req.body.size);
+        console.log("userData", userData);
 
         await Users.findOneAndUpdate({ _id: req.user.id }, { cartData: userData.cartData });
 
