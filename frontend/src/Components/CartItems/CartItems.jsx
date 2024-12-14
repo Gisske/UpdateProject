@@ -8,7 +8,6 @@ export const CartItems = ({ triggerError }) => {
     const { getTotalCartAmount, all_product, cartItems, removeToCart, addToCart, user } = useContext(ShopContext);
     const [showPopup, setShowPopup] = useState(false); // State สำหรับจัดการ popup
 
-
     const handleError = (message) => {
         triggerError(message); // เรียก Error Popup พร้อมข้อความที่ส่งมา
     };
@@ -67,25 +66,76 @@ export const CartItems = ({ triggerError }) => {
                 <span className='total'>ราคารวมสินค้า</span>
             </div>
             <hr />
-            {all_product.map((e) => {
-                if (cartItems[e.id] > 0) {
-                    return (
-                        <div key={e.id}>
+            {/* { cartItems.length > 0 && all_product.map((e) => {
+                const item = cartItems.find((item) => item.itemId === e.id);
+                if (item) {
+                    return <div key={e.id}>
+                        <div className="cartitem-format cartitem-format-main">
+                            <img src={e.image} alt="" className='carticon-product-icon' />
+                            <p className='cartitem-name'>{e.name}</p>
+                            <p>{e.new_price} <span>บาท</span></p>
+                            <button className='cartitems-quantity'>{item.quantity}</button>
+                            <p>{e.new_price * item.quantity}</p>
+                            <img className='add-icon' src={add_icon} onClick={() => { addToCart(e.id, item.size) }} alt="" />
+                            <img className='cartitems-remove-icon' src={remove_icon} onClick={() => { removeToCart(e.id) }} alt="" />
+                        </div>
+                    </div>
+                }
+                return null;
+            })} */}
+
+            {/* {cartItems.length > 0 && all_product.map((e) => {
+                const item = cartItems.find((item) => item.itemId === e.id);
+                if (item) {
+                    return <div key={e.id}>
+                        <div className="cartitem-format cartitem-format-main">
+                            <img src={e.image} alt="" className='carticon-product-icon' />
+                            <p className='cartitem-name'>{e.name}</p>
+                            <p>{e.new_price} <span>บาท</span></p>
+                            <button className='cartitems-quantity'>{item.quantity}</button>
+                            <p>{e.new_price * item.quantity}</p>
+                            <img className='add-icon' src={add_icon} onClick={() => { addToCart(e.id, item.size, e.new_price) }} alt="" />
+                            <img className='cartitems-remove-icon' src={remove_icon} onClick={() => { removeToCart(e.id) }} alt="" />
+                        </div>
+                    </div>
+                }
+                return null;
+            })} */}
+
+            {cartItems.length > 0 && all_product.map((e) => {
+                const items = cartItems.filter((item) => item.itemId === e.id); // หา items ทั้งหมดที่ตรงกับ product
+                if (items.length > 0) {
+                    return items.map((item, index) => (
+                        <div key={`${e.id}-${item.size}-${index}`}>
                             <div className="cartitem-format cartitem-format-main">
                                 <img src={e.image} alt="" className='carticon-product-icon' />
-                                <p className='cartitem-name'>{e.name}</p>
+                                <p className='cartitem-name'>{e.name} <br /> ไซต์: ({item.size})</p>
                                 <p>{e.new_price} <span>บาท</span></p>
-                                <button className='cartitems-quantity'>{cartItems[e.id]}</button>
-                                <p>{e.new_price * cartItems[e.id]}</p>
-                                <img className='add-icon' src={add_icon} onClick={() => { addToCart(e.id) }} alt="" />
-                                <img className='cartitems-remove-icon' src={remove_icon} onClick={() => { removeToCart(e.id) }} alt="" />
+                                <button className='cartitems-quantity'>{item.quantity}</button>
+                                <p>{e.new_price * item.quantity}</p>
+                                <img
+                                    className='add-icon'
+                                    src={add_icon}
+                                    onClick={() => addToCart(e.id, item.size, e.new_price)}
+                                    alt=""
+                                />
+                                <img
+                                    className='cartitems-remove-icon'
+                                    src={remove_icon}
+                                    onClick={() => removeToCart(e.id, item.size)}
+                                    alt=""
+                                />
                             </div>
-                            <hr />
                         </div>
-                    );
+                    ));
                 }
                 return null;
             })}
+
+
+
+
+
             <div className="cartitems-down">
                 <div className="cartitems-total">
                     <h1>ยอดรวมสินค้า</h1>
@@ -114,16 +164,17 @@ export const CartItems = ({ triggerError }) => {
                     <div className="popup-content">
                         <h2>ยืนยันคำสั่งซื้อ</h2>
                         <div className="popup-items">
-                            {all_product.map((e) => {
-                                if (cartItems[e.id] > 0) {
-                                    return (
-                                        <div key={e.id} className="popup-item">
+                            {cartItems.length > 0 && all_product.map((e) => {
+                                const items = cartItems.filter((item) => item.itemId === e.id); // หา items ทั้งหมดที่ตรงกับ product
+                                if (items.length > 0) {
+                                    return items.map((item, index) => (
+                                        <div key={item.id} className="popup-item">
                                             <img src={e.image} alt="" />
                                             <p>{e.name}</p>
-                                            <p>จำนวน: {cartItems[e.id]}</p>
-                                            <p>รวม: {e.new_price * cartItems[e.id]} บาท</p>
+                                            <p>จำนวน: {item.quantity}</p>
+                                            <p>รวม: {e.new_price * item.quantity} บาท</p>
                                         </div>
-                                    );
+                                    ));
                                 }
                                 return null;
                             })}
