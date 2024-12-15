@@ -3,7 +3,7 @@ import "./CSS/LoginSignUp.css";
 import Logo_img from '../Components/Assets/logo.png'
 import { FaInstagram, FaFacebook, FaLine } from 'react-icons/fa';
 
-const LoginSignup = ({ triggerError }) => {
+const LoginSignup = ({ triggerError, triggerSuccess }) => {
   const [state, setState] = useState("Login"); // จัดการสถานะ Login หรือ Signup
   const [formData, setFormData] = useState({
     username: "",
@@ -14,6 +14,10 @@ const LoginSignup = ({ triggerError }) => {
 
   const handleError = (message) => {
     triggerError(message); // เรียก Error Popup พร้อมข้อความที่ส่งมา
+  };
+
+  const handleSuccess = (message) => {
+    triggerSuccess(message); // เรียก Error Popup พร้อมข้อความที่ส่งมา
   };
 
 
@@ -72,9 +76,16 @@ const LoginSignup = ({ triggerError }) => {
     }
   };
 
-
-
-
+  // Function to clear form inputs
+  const clearForm = () => {
+    setFormData({
+      username: '',
+      idstudent: '',
+      email: '',
+      password: '',
+      role: 'user', // Reset role to default 'user'
+    });
+  };
 
   const signup = async () => {
     const { username, idstudent, email, password, role } = formData; // เพิ่ม role
@@ -98,7 +109,8 @@ const LoginSignup = ({ triggerError }) => {
 
       if (responseData.success) {
         localStorage.setItem("auth-token", responseData.token);
-        window.location.replace("/");
+        handleSuccess('สมัครสมาชิกเรียบร้อย!')
+        clearForm();
       } else {
         handleError(responseData.errors || "รหัสนักศึกษา และ อีเมล ซ้ำ! กรุณาลองใหม่");
       }

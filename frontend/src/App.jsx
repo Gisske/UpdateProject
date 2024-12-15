@@ -22,26 +22,43 @@ function App() {
     const isLoginPage = location.pathname === "/";
     const [showError, setShowError] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
+    const [showSuccess, setShowSuccess] = useState(false);
+    const [successMessage, setSuccessMessage] = useState("");
 
     const triggerError = (message) => {
         setErrorMessage(message);
         setShowError(true);
     };
 
-    const closeErrorPopup = () => setShowError(false);
+    const triggerSuccess = (message) => {
+        setSuccessMessage(message);
+        setShowSuccess(true);
+    };
+
+    const closeErrorPopup = () => {
+        setShowError(false);
+        setShowSuccess(false);
+    };
 
     return (
         <div>
+            {/* ErrorPopup Component for displaying error and success messages */}
             <ErrorPopup
                 showError={showError}
                 errorMessage={errorMessage}
+                showSuccess={showSuccess}
+                successMessage={successMessage}
                 onClose={closeErrorPopup}
             />
-            {!isLoginPage && <PrivateRoute><Navbar /></PrivateRoute>} {/* Hide Navbar on login page */}
-            <Routes>
-                <Route path="/" element={<LoginSignup triggerError={triggerError} />} />
 
-                {/* PrivateRoute wraps around pages that need to be protected */}
+            {/* Conditionally render Navbar based on login status */}
+            {!isLoginPage && <PrivateRoute><Navbar /></PrivateRoute>}
+
+            <Routes>
+                {/* Public route for the login/signup page */}
+                <Route path="/" element={<LoginSignup triggerError={triggerError} triggerSuccess={triggerSuccess} />} />
+
+                {/* Private routes for other pages */}
                 <Route
                     path="/shop"
                     element={<PrivateRoute><Shop /></PrivateRoute>}
@@ -54,13 +71,16 @@ function App() {
                 <Route path="product" element={<PrivateRoute><Product /></PrivateRoute>}>
                     <Route path=":productId" element={<PrivateRoute><Product /></PrivateRoute>} />
                 </Route>
-                <Route path="/cart" element={<PrivateRoute ><CartItems triggerError={triggerError} /></PrivateRoute>} />
+                <Route path="/cart" element={<PrivateRoute><CartItems triggerError={triggerError} triggerSuccess={triggerSuccess} /></PrivateRoute>} />
             </Routes>
-            {!isLoginPage && <PrivateRoute><Footer /></PrivateRoute>} {/* Hide Footer on login page */}
+
+            {/* Conditionally render Footer based on login status */}
+            {!isLoginPage && <PrivateRoute><Footer /></PrivateRoute>}
         </div>
     );
 }
 
+// WrappedApp component for using BrowserRouter
 export default function WrappedApp() {
     return (
         <BrowserRouter>

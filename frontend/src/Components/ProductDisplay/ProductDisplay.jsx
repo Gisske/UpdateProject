@@ -25,7 +25,7 @@ export const ProductDisplay = (props) => {
     // Handle confirming the selection and adding to cart
     const handleConfirmAddToCart = () => {
         if (selectedSize) {
-            addToCart(product.id, selectedSize); // ส่ง size ไปพร้อมกับ product ID
+            addToCart(product.id, selectedSize, product.new_price); // ส่ง size ไปพร้อมกับ product ID
             setIsPopupVisible(false);
             setSizeMessage('');
         } else {

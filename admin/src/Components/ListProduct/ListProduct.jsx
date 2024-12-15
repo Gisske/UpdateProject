@@ -3,9 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import './ListProduct.css';
 import cross_icon from '../../assets/cross_icon.png';
 
-const ListProduct = () => {
+const ListProduct = ({ triggerSuccess }) => {
     const [allproducts, setAllProducts] = useState([]);
     const navigate = useNavigate();
+
+    const handleSuccess = (message) => {
+        triggerSuccess(message); // เรียก Error Popup พร้อมข้อความที่ส่งมา
+    };
 
     const fetchInfo = async () => {
         const response = await fetch('http://localhost:4000/allproducts');
@@ -26,6 +30,7 @@ const ListProduct = () => {
             },
             body: JSON.stringify({ id: id }),
         });
+        handleSuccess('ลบสินค้าสำเร็จ')
         await fetchInfo();
     };
 

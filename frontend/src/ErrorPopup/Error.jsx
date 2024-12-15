@@ -1,40 +1,64 @@
 import React, { useState, useEffect } from "react";
-import { FaSpinner, FaTimes } from "react-icons/fa"; // import FaTimes for close icon
-import "./Error.css"; // ไฟล์ CSS แยกสำหรับ styling
+import { FaSpinner, FaTimes, FaCheckCircle } from "react-icons/fa"; // เพิ่ม FaCheckCircle สำหรับ success icon
+import "./Error.css"; // เปลี่ยนชื่อไฟล์ CSS ให้รองรับทั้ง error และ success
 
-const ErrorPopup = ({ showError, errorMessage, onClose }) => {
+const NotificationPopup = ({
+    showError,
+    errorMessage,
+    showSuccess,
+    successMessage,
+    onClose
+}) => {
     const [isLoaded, setIsLoaded] = useState(false);
 
     useEffect(() => {
-        console.log("showError:", showError);
-        if (showError) {
+        if (showError || showSuccess) {
             setIsLoaded(false);
             const timer = setTimeout(() => {
                 setIsLoaded(true);
-                console.log("Spinner should be hidden, loading finished.");
             }, 200);
             return () => clearTimeout(timer);
         } else {
             setIsLoaded(false);
         }
-    }, [showError]);
+    }, [showError, showSuccess]);
 
     return (
-        showError && (
-            <div className={`error-popup ${isLoaded ? "show" : ""}`}>
-                <div className="error-message">
-                    {!isLoaded ? (
-                        <FaSpinner className="spinner" /> // แสดง spinner ก่อน
-                    ) : (
-                        <>
+        (showError || showSuccess) && (
+            <div
+                className={`error-popup ${isLoaded ? "show" : ""
+                    } ${showError ? "error" : "success"}`}
+            >
+                {!isLoaded ? (
+                    <FaSpinner className="spinner" />
+                ) : showError ? (
+                    // แสดง error popup
+                    <>
+                        <div className="error-message">
                             <p>{errorMessage}</p>
-                            <FaTimes className="close-icon" onClick={onClose} /> {/* ใช้ FaTimes แทนปุ่ม */}
-                        </>
-                    )}
-                </div>
+                            <FaTimes
+                                className="close-icon"
+                                onClick={onClose}
+                            />
+                        </div>
+                    </>
+                ) : (
+                    // แสดง success popup
+                    <>
+                        <div className="success-message">
+                            <FaCheckCircle className="success-icon" />
+                            <p>{successMessage}</p>
+                            <FaTimes
+                                className="close-icon"
+                                onClick={onClose}
+                            />
+                        </div>
+
+                    </>
+                )}
             </div>
         )
     );
 };
 
-export default ErrorPopup;
+export default NotificationPopup;

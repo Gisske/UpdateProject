@@ -3,7 +3,7 @@ import './ManageUsers.css';
 
 const ManageUsers = () => {
     const [users, setUsers] = useState([]);
-    const [newUser, setNewUser] = useState({ idstudent: '', email: '', role: 'user', password: '', date: Date });
+    const [newUser, setNewUser] = useState({ name: '', idstudent: '', email: '', role: 'user', password: '', date: Date });
     const [editingUser, setEditingUser] = useState(null);
 
     useEffect(() => {
@@ -21,7 +21,7 @@ const ManageUsers = () => {
 
     const editUser = (user) => {
         setEditingUser(user);
-        setNewUser({ idstudent: user.idstudent, email: user.email, role: user.role, password: user.password, date: user.date });
+        setNewUser({ name: user.name, idstudent: user.idstudent, email: user.email, role: user.role, password: user.password, date: user.date });
     };
 
     const updateUser = () => {
@@ -34,7 +34,7 @@ const ManageUsers = () => {
             .then((updatedUser) => {
                 setUsers(users.map(user => user._id === updatedUser._id ? updatedUser : user));
                 setEditingUser(null);
-                setNewUser({ idstudent: '', email: '', role: 'user', password: '', date: Date });
+                setNewUser({ name: '', idstudent: '', email: '', role: 'user', password: '', date: Date });
             })
             .catch((error) => console.error('Error updating user:', error));
     };
@@ -67,6 +67,12 @@ const ManageUsers = () => {
                             placeholder="ID"
                             value={newUser.idstudent}
                             onChange={(e) => setNewUser({ ...newUser, idstudent: e.target.value })}
+                        />
+                        <input
+                            type="text"
+                            placeholder="Name"
+                            value={newUser.name}
+                            onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
                         />
                         <input
                             type="email"
@@ -105,6 +111,7 @@ const ManageUsers = () => {
                             <tr>
                                 <th>#</th>
                                 <th>Id</th>
+                                <th>Name</th>
                                 <th>Email</th>
                                 <th>Role</th>
                                 <th>Password</th>
@@ -117,6 +124,7 @@ const ManageUsers = () => {
                                 <tr key={user._id}>
                                     <td>{index + 1}</td>
                                     <td>{user.idstudent}</td>
+                                    <td>{user.name}</td>
                                     <td>{user.email}</td>
                                     <td>{user.role}</td>
                                     <td>{user.password}</td>

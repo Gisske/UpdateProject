@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './AddProduct.css';
 import upload_area from '../../assets/upload_area.svg';
 
-const AddProduct = () => {
+const AddProduct = ({ triggerSuccess, triggerError }) => {
     const [image, setImage] = useState(false);
     const [productDetails, setProductDetails] = useState({
         name: "",
@@ -17,8 +17,16 @@ const AddProduct = () => {
         setImage(e.target.files[0]);
     };
 
+    const handleError = (message) => {
+        triggerError(message); // เรียก Error Popup พร้อมข้อความที่ส่งมา
+    };
+
     const changeHandler = (e) => {
         setProductDetails({ ...productDetails, [e.target.name]: e.target.value });
+    };
+
+    const handleSuccess = (message) => {
+        triggerSuccess(message); // เรียก Error Popup พร้อมข้อความที่ส่งมา
     };
 
     const addSizes = () => {
@@ -39,28 +47,48 @@ const AddProduct = () => {
         let formData = new FormData();
         formData.append('product', image);
 
-        await fetch('http://localhost:4000/upload', {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-            },
-            body: formData,
-        }).then((resp) => resp.json()).then((data) => { responseData = data });
-
-        if (responseData.success) {
-            product.image = responseData.image_url;
-            await fetch('http://localhost:4000/addproduct', {
+        try {
+            const uploadResponse = await fetch('http://localhost:4000/upload', {
                 method: 'POST',
                 headers: {
                     Accept: 'application/json',
-                    'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(product),
-            }).then((resp) => resp.json()).then((data) => {
-                data.success ? alert("Product Added") : alert("Failed");
+                body: formData,
             });
+
+            if (!uploadResponse.ok) {
+                throw new Error('โปรดอัปโหลดรูปสินค้า');
+            }
+
+            responseData = await uploadResponse.json();
+
+            if (responseData.success) {
+                product.image = responseData.image_url;
+
+                const addProductResponse = await fetch('http://localhost:4000/addproduct', {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(product),
+                });
+
+                const data = await addProductResponse.json();
+
+                if (data.success) {
+                    handleSuccess("เพิ่มสินค้าสำเร็จ!");
+                } else {
+                    handleError("โปรดกรอกรายละเอียดสินค้า");
+                }
+            } else {
+                handleError("โปรดอัปโหลดรูปสินค้า");
+            }
+        } catch (error) {
+            handleError(error.message);
         }
     };
+
 
     return (
         <div className='add-product'>

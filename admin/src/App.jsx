@@ -11,7 +11,7 @@ import EditProduct from './Components/EditProduct/EditProduct'
 import ManageUsers from './Components/ManageUsers/ManageUsers';
 import Dashboard from './Components/Dashboard/Dashboard';
 import Seller from './Pages/Seller/Seller';
-import ErrorPopup from './Error/Error';
+import NotificationPopup from './Error/Error';
 import About from "./Components/About/About";
 import Private from './Private/Private'
 
@@ -20,29 +20,42 @@ function App() {
   const isLoginPage = location.pathname === "/";
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
 
   const triggerError = (message) => {
     setErrorMessage(message);
     setShowError(true);
   };
 
-  const closeErrorPopup = () => setShowError(false);
+  const triggerSuccess = (message) => {
+    setSuccessMessage(message);
+    setShowSuccess(true);
+  };
+
+  const closeNotification = () => {
+    setShowError(false);
+    setShowSuccess(false);
+  };
+
   return (
     <div>
-      <ErrorPopup
+      <NotificationPopup
         showError={showError}
         errorMessage={errorMessage}
-        onClose={closeErrorPopup}
+        showSuccess={showSuccess}
+        successMessage={successMessage}
+        onClose={closeNotification}
       />
       {!isLoginPage && <Private><Navbar /></Private>} {/* Hide Navbar on login page */}
       <Routes>
-        <Route path="/" element={<LoginSignup triggerError={triggerError} />} />
+        <Route path="/" element={<LoginSignup triggerError={triggerError} triggerSuccess={triggerSuccess} />} />
         <Route path="seller" element={<Private><Admin /></Private>} />
         <Route path="admin" element={<Private><Seller /></Private>} />
         {/* เส้นทางสำหรับเพิ่มสินค้า */}
-        <Route path='/addproduct' element={<Private><AddProduct /></Private>} />
+        <Route path='/addproduct' element={<Private><AddProduct triggerError={triggerError} triggerSuccess={triggerSuccess} /></Private>} />
         {/* เส้นทางสำหรับแสดงรายการสินค้า */}
-        <Route path='/listproduct' element={<Private><ListProduct /></Private>} />
+        <Route path='/listproduct' element={<Private><ListProduct triggerSuccess={triggerSuccess} /></Private>} />
         {/* เส้นทางสำหรับแก้ไขสินค้า */}
         <Route path='/edit-product/:id' element={<Private><EditProduct /></Private>} />
         <Route path="/manage-users" element={<Private><ManageUsers /></Private>} />

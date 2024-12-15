@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "../LoginSignUp/LoginSignUp.css";
 import Logo_img from '../../assets/logo.png';
 
-const LoginSignup = ({ triggerError }) => {
+const LoginSignup = ({ triggerError, triggerSuccess }) => {
     const [formData, setFormData] = useState({
         username: "",
         password: "",
@@ -11,6 +11,10 @@ const LoginSignup = ({ triggerError }) => {
 
     const handleError = (message) => {
         triggerError(message); // เรียก Error Popup พร้อมข้อความที่ส่งมา
+    };
+
+    const handleSuccess = (message) => {
+        triggerSuccess(message); // เรียก Error Popup พร้อมข้อความที่ส่งมา
     };
 
 
@@ -45,11 +49,11 @@ const LoginSignup = ({ triggerError }) => {
             // Check if the role is admin or seller
             if (role === "admin") {
                 localStorage.setItem("auth-token", responseData.token);
-                handleError("เข้าสู่ระบบสำเร็จ!");
+                handleSuccess("เข้าสู่ระบบสำเร็จ!");
                 window.location.replace("/admin"); // Redirect to admin page
             } else if (role === "seller") {
                 localStorage.setItem("auth-token", responseData.token);
-                handleError("เข้าสู่ระบบสำเร็จ!");
+                handleSuccess("เข้าสู่ระบบสำเร็จ!");
                 window.location.replace("/seller"); // Redirect to seller page
             } else {
                 handleError("บัญชีนี้ไม่สามารถเข้าสู่ระบบได้");

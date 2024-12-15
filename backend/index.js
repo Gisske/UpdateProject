@@ -6,6 +6,7 @@ const jwt = require("jsonwebtoken");
 const multer = require("multer");
 const path = require("path");
 const cors = require("cors");
+const Order = require('./models/Order'); // เส้นทางที่ถูกต้องของไฟล์ Order
 
 app.use(express.json());
 app.use(cors());
@@ -142,7 +143,7 @@ app.get('/allproducts', async(req, res) => {
 app.get('/api/users', async(req, res) => {
     try {
         // กรองผู้ใช้ที่มี role เป็น 'user' และเลือกแค่ฟิลด์ที่ต้องการ
-        const users = await Users.find({ role: { $in: ['user', 'admin', 'seller'] } }, 'name email role date password');
+        const users = await Users.find({ role: { $in: ['user', 'admin', 'seller'] } }, 'name idstudent email role date password');
 
         res.json(users); // ส่งข้อมูลผู้ใช้กลับไป
     } catch (error) {
@@ -154,10 +155,10 @@ app.get('/api/users', async(req, res) => {
 app.post('/api/users', async(req, res) => {
     try {
         // ดึงข้อมูลจาก request body
-        const { idstudent, email, role, password, date } = req.body;
+        const { name, idstudent, email, role, password, date } = req.body;
 
         // ตรวจสอบว่าข้อมูลครบถ้วน
-        if (!idstudent || !email || !role || !password || !date) {
+        if (!name || !idstudent || !email || !role || !password || !date) {
             return res.status(400).json({ error: 'All fields are required: name, email, and role' });
         }
 
@@ -169,6 +170,7 @@ app.post('/api/users', async(req, res) => {
 
         // สร้างผู้ใช้ใหม่
         const newUser = new Users({
+            name,
             idstudent,
             email,
             role,
@@ -205,8 +207,8 @@ app.delete('/api/users/:id', async(req, res) => {
 app.put('/api/users/:id', async(req, res) => {
     try {
         const { id } = req.params;
-        const { idstudent, email, role, password } = req.body; // สามารถเพิ่มฟิลด์อื่น ๆ ได้
-        const updatedUser = await Users.findByIdAndUpdate(id, { idstudent, email, role, password }, { new: true });
+        const { name, idstudent, email, role, password } = req.body; // สามารถเพิ่มฟิลด์อื่น ๆ ได้
+        const updatedUser = await Users.findByIdAndUpdate(id, { name, idstudent, email, role, password }, { new: true });
         if (!updatedUser) {
             return res.status(404).json({ message: 'User not found' });
         }
@@ -220,17 +222,44 @@ app.put('/api/users/:id', async(req, res) => {
 const fetchUser = async(req, res, next) => {
     const token = req.header('auth-token');
     if (!token) {
-        return res.status(401).send({ errors: "Please authenticate using a valid token" });
-    } else {
-        try {
-            const data = jwt.verify(token, 'secret_ecom');
-            req.user = data.user;
-            next(); // Proceed to the next middleware or route handler
-        } catch (error) {
-            return res.status(401).send({ errors: "Please authenticate using a valid token" });
-        }
+        return res.status(401).json({ error: "Please authenticate using a valid token" });
+    }
+
+    try {
+        const data = jwt.verify(token, 'secret_ecom');
+        req.user = data.user;
+        next(); // Proceed to the next middleware or route handler
+    } catch (error) {
+        return res.status(401).json({ error: "Invalid token" });
     }
 };
+
+// Function to get user info from the database
+const getUserInfoFromDB = async(userId) => {
+    try {
+        const user = await Users.findById(userId).select('-password'); // Exclude password from the returned data
+        return user;
+    } catch (error) {
+        console.error('Error fetching user from database:', error);
+        throw new Error('Error fetching user from database');
+    }
+};
+
+// Route handler for '/getuser'
+app.get('/getuser', fetchUser, async(req, res) => {
+    const userId = req.user.id;
+    try {
+        const user = await getUserInfoFromDB(userId);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        res.status(200).json(user);
+    } catch (error) {
+        console.error('Error fetching user:', error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
+
 
 // User Schema
 const Users = mongoose.model('Users', {
@@ -254,8 +283,8 @@ const Users = mongoose.model('Users', {
         required: true,
     },
     cartData: {
-        type: Object,
-        default: {},
+        type: Array,
+        default: [],
     },
     role: {
         type: String,
@@ -297,7 +326,6 @@ app.post('/signup', async(req, res) => {
             idstudent: req.body.idstudent,
             email: req.body.email,
             password: req.body.password,
-            cartData: cart,
         });
 
         await user.save();
@@ -312,7 +340,6 @@ app.post('/signup', async(req, res) => {
 
 
 // Creating Endpoint Login with Server
-// Server: /login Endpoint
 app.post('/login', async(req, res) => {
     try {
         const { email, password } = req.body;
@@ -396,14 +423,60 @@ app.get('/popularinmen', async(req, res) => {
     res.send(popular_in_men);
 })
 
+
+
+// Endpoint สำหรับบันทึกคำสั่งซื้อ
+app.post('/api/orders', async(req, res) => {
+    try {
+        console.log('Received Order:', req.body);
+
+        const { name, idstudent, totalAmount, items, orderDate } = req.body;
+
+        // ตรวจสอบว่าข้อมูลทั้งหมดถูกส่งมาอย่างถูกต้อง
+        if (!name || !idstudent || !totalAmount || !items || !orderDate) {
+            return res.status(400).json({ message: 'All fields are required', success: false });
+        }
+
+        // สร้างโมเดลคำสั่งซื้อใหม่และบันทึกลงฐานข้อมูล
+        const newOrder = new Order({
+            name,
+            idstudent,
+            totalAmount,
+            items,
+            orderDate,
+        });
+
+        await newOrder.save();
+        res.status(201).json({ message: 'Order saved successfully', success: true });
+    } catch (error) {
+        console.error('Error saving order:', error);
+        res.status(500).json({ message: 'Internal Server Error', success: false });
+    }
+});
+
+
+
 //creating endpoint for adding products in cartData
 app.post('/addtocart', fetchUser, async(req, res) => {
     try {
         console.log("Added", req.body.itemId);
+        console.log("req.body", req.body);
 
         // ค้นหาข้อมูลผู้ใช้
         let userData = await Users.findOne({ _id: req.user.id });
-        userData.cartData[req.body.itemId] = (userData.cartData[req.body.itemId] || 0) + 1;
+
+        // ตรวจสอบว่ามีสินค้านี้ในตะกร้าหรือไม่
+        const existingItem = userData.cartData.find(item => item.itemId === req.body.itemId && item.size === req.body.size);
+        if (existingItem) {
+            existingItem.quantity += 1;
+        } else {
+            userData.cartData.push({
+                itemId: req.body.itemId,
+                size: req.body.size,
+                quantity: 1,
+                price: req.body.price
+            });
+        }
 
         // อัปเดตข้อมูลในฐานข้อมูล
         await Users.findOneAndUpdate({ _id: req.user.id }, { cartData: userData.cartData });
@@ -421,14 +494,28 @@ app.post('/addtocart', fetchUser, async(req, res) => {
 app.post('/removefromcart', fetchUser, async(req, res) => {
     try {
         console.log("Remove", req.body.itemId);
+        console.log("req.body", req.body);
         let userData = await Users.findOne({ _id: req.user.id });
-        if (userData.cartData[req.body.itemId] > 0) {
-            userData.cartData[req.body.itemId] -= 1;
+
+        // ค้นหาสินค้าใน cartData
+        const cartItem = userData.cartData.find(item => item.itemId === req.body.itemId && item.size === req.body.size);
+
+        if (cartItem) {
+            if (cartItem.quantity > 1) {
+                // ลดจำนวนสินค้าในตะกร้าลง 1 หาก quantity > 1
+                cartItem.quantity -= 1;
+            } else {
+                // หาก quantity เป็น 1 ให้ลบสินค้าออกจากตะกร้า
+                userData.cartData = userData.cartData.filter(item => item.itemId !== req.body.itemId || item.size !== req.body.size);
+            }
+
+            // อัปเดตข้อมูลในฐานข้อมูล
+            await Users.findOneAndUpdate({ _id: req.user.id }, { cartData: userData.cartData });
+
+            res.json({ message: "Remove successfully", success: true });
+        } else {
+            res.status(404).json({ message: "Item not found in cart", success: false });
         }
-
-        await Users.findOneAndUpdate({ _id: req.user.id }, { cartData: userData.cartData });
-
-        res.json({ message: "Remove successfully", success: true });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Internal Server Error", success: false });
