@@ -493,34 +493,46 @@ app.post('/addtocart', fetchUser, async(req, res) => {
 //creating endpoint to remove product from cartdata
 app.post('/removefromcart', fetchUser, async(req, res) => {
     try {
-        console.log("Remove", req.body.itemId);
-        console.log("req.body", req.body);
-        let userData = await Users.findOne({ _id: req.user.id });
+        const { itemId, size } = req.body;
+
+        console.log("Request to remove item:", { itemId, size });
+
+        // ค้นหา user ในฐานข้อมูล
+        const userData = await Users.findOne({ _id: req.user.id });
+
+        if (!userData || !userData.cartData) {
+            return res.status(404).json({ message: "User or cart not found", success: false });
+        }
 
         // ค้นหาสินค้าใน cartData
-        const cartItem = userData.cartData.find(item => item.itemId === req.body.itemId && item.size === req.body.size);
+        const cartItemIndex = userData.cartData.findIndex(
+            item => item.itemId === itemId && item.size === size
+        );
 
-        if (cartItem) {
-            if (cartItem.quantity > 1) {
-                // ลดจำนวนสินค้าในตะกร้าลง 1 หาก quantity > 1
-                cartItem.quantity -= 1;
-            } else {
-                // หาก quantity เป็น 1 ให้ลบสินค้าออกจากตะกร้า
-                userData.cartData = userData.cartData.filter(item => item.itemId !== req.body.itemId || item.size !== req.body.size);
-            }
-
-            // อัปเดตข้อมูลในฐานข้อมูล
-            await Users.findOneAndUpdate({ _id: req.user.id }, { cartData: userData.cartData });
-
-            res.json({ message: "Remove successfully", success: true });
-        } else {
-            res.status(404).json({ message: "Item not found in cart", success: false });
+        if (cartItemIndex === -1) {
+            return res.status(404).json({ message: "Item not found in cart", success: false });
         }
+
+        const cartItem = userData.cartData[cartItemIndex];
+
+        if (cartItem.quantity > 1) {
+            // ลดจำนวนสินค้าในตะกร้าลง 1 หาก quantity > 1
+            userData.cartData[cartItemIndex].quantity -= 1;
+        } else {
+            // หาก quantity เป็น 1 ให้ลบสินค้าออกจาก cartData
+            userData.cartData.splice(cartItemIndex, 1);
+        }
+
+        // อัปเดตข้อมูลในฐานข้อมูล
+        await Users.findOneAndUpdate({ _id: req.user.id }, { cartData: userData.cartData });
+
+        res.json({ message: "Remove successfully", success: true, cartData: userData.cartData });
     } catch (error) {
-        console.error(error);
+        console.error("Error removing item from cart:", error);
         res.status(500).json({ message: "Internal Server Error", success: false });
     }
 });
+
 
 
 //creating endpoint to get cartdata

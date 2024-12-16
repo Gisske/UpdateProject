@@ -11,7 +11,6 @@ const getDefaultCart = () => {
 }
 
 const ShopContextProvider = (props) => {
-
     const [all_product, setAll_Product] = useState([]);
     const [cartItems, setCartItems] = useState([]);
     const [user, setUser] = useState(null);
@@ -41,7 +40,7 @@ const ShopContextProvider = (props) => {
             fetch('http://localhost:4000/getuser', {
                 method: 'GET',
                 headers: {
-                    'auth-token': `${localStorage.getItem('auth-token')}`,
+                    'auth-token': `${localStorage.getItem('auth-token')}`, // Backticks ที่ถูกต้อง
                 },
             })
                 .then((response) => response.json())
@@ -82,27 +81,41 @@ const ShopContextProvider = (props) => {
             fetch('http://localhost:4000/removefromcart', {
                 method: 'POST',
                 headers: {
-                    Accept: 'application/form-data',
+                    Accept: 'application/json', // แก้ Content-Type
                     'auth-token': `${localStorage.getItem('auth-token')}`,
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ "itemId": itemId, "size": size }),
+                body: JSON.stringify({ itemId, size }),
             })
-                .then((response) => response.json())
-                .then((data) => console.log(data)).finally(() => {
-                    fetch('http://localhost:4000/getcart', {
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error('Failed to remove item from cart');
+                    }
+                    return response.json();
+                })
+                .then((data) => {
+                    console.log(data);
+                    return fetch('http://localhost:4000/getcart', {
                         method: 'POST',
                         headers: {
-                            Accept: 'application/form-data',
+                            Accept: 'application/json',
                             'auth-token': `${localStorage.getItem('auth-token')}`,
                             'Content-Type': 'application/json',
                         },
                         body: "",
-                    }).then((response) => response.json())
-                        .then((data) => setCartItems(data));
-                });
+                    });
+                })
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch updated cart');
+                    }
+                    return response.json();
+                })
+                .then((data) => setCartItems(data))
+                .catch((error) => console.error('Error:', error)); // จัดการข้อผิดพลาดที่นี่
         }
-    }
+    };
+
 
     const getTotalCartAmount = () => {
         let totalAmount = 0;
